@@ -10,7 +10,12 @@ class JobApplicationViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # only returns the current user's applications
-        return JobApplication.objects.filter(user=self.request.user)
+        status = self.request.query_params.get('status')
+
+        if status is None: 
+            return JobApplication.objects.filter(user=self.request.user)
+        
+        return JobApplication.objects.filter(user=self.request.user, status=status)
     
     def perform_create(self, serializer):
         # add user_id when a new application is added
