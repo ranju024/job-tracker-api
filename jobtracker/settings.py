@@ -45,20 +45,23 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
     "jobs",
     "accounts",
     'corsheaders',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
+    "DEFAULT_PAGINATION_CLASS": "jobs.pagination.JobPagination",
+    "PAGE_SIZE": 10,
 }
 
 
@@ -66,6 +69,47 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'BLACKLIST_AFTER_ROTATION': True,
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Job Tracker API",
+    "DESCRIPTION": """
+    A production-oriented REST API for managing job applications.
+
+    Features:
+    - JWT authentication
+    - Job application management
+    - Application status history
+    - Interview scheduling
+    - Advanced filtering and search
+    - Pagination
+    - Dashboard analytics
+    """,
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+
+    "TAGS": [
+        {
+            "name": "Authentication",
+            "description": "User registration and authentication.",
+        },
+        {
+            "name": "Job Applications",
+            "description": "Create and manage job applications.",
+        },
+        {
+            "name": "Interviews",
+            "description": "Manage interviews for job applications.",
+        },
+        {
+            "name": "Status History",
+            "description": "View job application status changes.",
+        },
+        {
+            "name": "Dashboard",
+            "description": "Application statistics and insights.",
+        },
+    ],
 }
 
 MIDDLEWARE = [

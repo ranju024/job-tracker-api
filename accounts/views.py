@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_spectacular.utils import extend_schema
+
 from .serializers import RegisterSerializer
 
 # Create your views here.
+@extend_schema(tags=["Authentication"], summary="Register a new user.")
 class RegisterView(APIView):
     permission_classes = [AllowAny]  # anyone can register without token; overrides the global IsAuthenticated setting.
 
@@ -18,6 +21,7 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # u need to blacklist the refresh token once the user logs out   
+@extend_schema(tags=["Authentication"], summary="Logout user")
 class LogoutView(APIView):
     def post(self, request):
         try:
