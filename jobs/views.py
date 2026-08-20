@@ -33,9 +33,32 @@ class JobApplicationViewset(viewsets.ModelViewSet):
         location = self.request.query_params.get("location")
         work_type = self.request.query_params.get("work_type")
         search = self.request.query_params.get("search")
+        upcoming_interview = self.request.query_params.get(
+            "upcoming_interview"
+        )
+        stale = self.request.query_params.get("stale")
 
-        if status_filter:
+        if status_filter == "active":
+            queryset = queryset.exclude(
+                status__in=["rejected", "withdrawn", "ghosted", "offered"]
+            )
+        elif status_filter:
             queryset = queryset.filter(status=status_filter)
+
+        if stale == "true":
+            stale_cutoff = timezone.now() - timezone.timedelta(days=15)
+            queryset = queryset.filter(
+                updated_at__lte=stale_cutoff
+            ).exclude(
+                status__in=["rejected", "withdrawn", "ghosted", "offered"]
+            )
+
+        if upcoming_interview == "true":
+            queryset = queryset.filter(
+                interviews__scheduled_at__gte=timezone.now()
+            ).exclude(
+                status__in=["rejected", "withdrawn", "ghosted"]
+            ).distinct()
 
         if company:
             queryset = queryset.filter(
@@ -161,14 +184,16 @@ class DashboardView(APIView):
         upcoming_interviews = Interview.objects.filter(
             application__user=request.user,
             scheduled_at__gte=timezone.now(),
+        ).exclude(
+            application__status__in=["rejected", "withdrawn", "ghosted"]
         ).select_related(
             "application"
         )[:10]
 
-        thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+        stale_cutoff = timezone.now() - timezone.timedelta(days=15)
 
         stale_applications = applications.filter(
-            updated_at__lte=thirty_days_ago,
+            updated_at__lte=stale_cutoff,
         ).exclude(
             status__in=["rejected", "withdrawn", "ghosted", "offered"]
         )[:10]
