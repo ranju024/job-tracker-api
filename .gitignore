@@ -1,7 +1,37 @@
-.env
-env/
+# Python
 __pycache__/
-*.pyc
-db.sqlite3
+*.py[cod]
+*.pyo
+
+# Virtual environment
 venv/
+.venv/
+env/
+
+# Django
+db.sqlite3
+*.log
+staticfiles/
+media/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets
+*.pem
+*.key
+
 job-tracker-client/

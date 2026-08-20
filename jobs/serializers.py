@@ -8,6 +8,8 @@ class StatusHistorySerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "changed_at"]
 
 class InterviewSerializer(serializers.ModelSerializer):
+    application_title = serializers.CharField(source="application.title", read_only=True)
+    application_company = serializers.CharField(source="application.company", read_only=True)
     class Meta:
         model = Interview
         fields = "__all__"
